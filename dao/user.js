@@ -3,7 +3,6 @@ const User = require('../models/user')
 module.exports = {
   // 查询单个用户详情
   findUserByName(name) {
-    console.log(1111, name)
     return User.forge().where({ name: name }).fetch()
   },
   // 新增用户

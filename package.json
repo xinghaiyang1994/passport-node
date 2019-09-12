@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "cross-env env=dev nodemon index.js",
-    "prod": "pm2 delete passport && cross-env env=prod pm2 start index.js --name='passport'"
+    "prod": "cross-env env=prod pm2 start index.js --name='passport'",
+    "delete": "pm2 delete passport"
   },
   "repository": {
     "type": "git",
