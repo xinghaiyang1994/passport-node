@@ -1,0 +1,41 @@
+{
+  "name": "sea-koa",
+  "version": "1.0.0",
+  "description": "some koa",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env env=dev nodemon index.js",
+    "prod": "pm2 delete passport && cross-env env=prod pm2 start index.js --name='passport'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xinghaiyang1994/sea-koa.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xinghaiyang1994/sea-koa/issues"
+  },
+  "homepage": "https://github.com/xinghaiyang1994/sea-koa#readme",
+  "dependencies": {
+    "bookshelf": "^0.15.1",
+    "bookshelf-camelcase": "^2.0.1",
+    "ioredis": "^4.14.0",
+    "joi": "^14.3.1",
+    "knex": "^0.19.3",
+    "koa": "^2.5.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-helmet": "^5.1.0",
+    "koa-redis": "^4.0.0",
+    "koa-router": "^7.4.0",
+    "koa-session": "^5.12.3",
+    "koa2-cors": "^2.0.6",
+    "log4js": "^5.1.0",
+    "mysql": "^2.16.0",
+    "svg-captcha": "^1.4.0"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.1",
+    "debug": "^4.1.1"
+  }
+}
