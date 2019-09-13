@@ -14,5 +14,9 @@ module.exports = {
     name: Joi.string().max(20).required(),
     password: Joi.string().max(20).required(),
     captcha: Joi.string().length(4).required()
-  }
+  },
+  // app
+  app: {
+    name: Joi.string().max(20).required()
+  },
 }

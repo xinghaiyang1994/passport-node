@@ -50,7 +50,8 @@ module.exports = {
     let jsonNewUser = daoNewUser.toJSON()
     ctx.session.user = {
       id: jsonNewUser.id,
-      name: jsonNewUser.name
+      name: jsonNewUser.name,
+      isAdmin: jsonNewUser.isAdmin
     }
     return ctx.body = dealBody({
       data: {
@@ -81,7 +82,8 @@ module.exports = {
     // 登录
     ctx.session.user = {
       id: jsonUser.id,
-      name: jsonUser.name
+      name: jsonUser.name,
+      isAdmin: jsonUser.isAdmin
     }
     return ctx.body = dealBody({
       message: '登录成功'
@@ -94,9 +96,12 @@ module.exports = {
     if (!loginData.status) {
       return ctx.body = loginData.data
     }
-
+    
+    const { id, name, isAdmin } = ctx.session.user
     return ctx.body = dealBody({
-      data: ctx.session.user
+      data: {
+        id, name, isAdmin
+      }
     })
   },
   // 退出
