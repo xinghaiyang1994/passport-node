@@ -5,7 +5,10 @@ const {
   findAppListByName,
   findAppCountByName,
   findAppByName,
-  insertApp
+  insertApp,
+  findAppDetailById,
+  deleteAppById,
+  updateApp
 } = require('../dao/app')
 
 module.exports = {
@@ -50,6 +53,56 @@ module.exports = {
         id: jsonNewApp.id
       },
       message: '新增成功'
+    })
+  },
+  // 详情
+  async getDetail(ctx) {
+    const { id } = ctx.query
+
+    // 查询
+    const daoDetail = await findAppDetailById(id)
+    if (!daoDetail) {
+      throw new Error('该 id 不存在！')
+    }
+    const jsonDetail = daoDetail.toJSON()
+
+    return ctx.body = dealBody({
+      data: jsonDetail
+    })
+  },
+  // 删除
+  async postDetele(ctx) {
+    const { id } = ctx.request.body
+    
+    // 删除
+    await deleteAppById(id)
+    
+    return ctx.body = dealBody({
+      message: '删除成功'
+    })
+  },
+  // 修改
+  async postModify(ctx) {
+    let { id, name } = ctx.request.body
+    name = name.trim()
+
+    // 校验
+    validate({ name }, app)
+    if (typeof id === 'undefined') {
+      throw new Error('id 不能为空！')
+    }
+    
+    // 更新
+    let daoApp = await updateApp({ 
+      id, 
+      name, 
+      gmtModified: tranTime(new Date(), 'timestamp-mysql') 
+    }) 
+    let jsonApp = daoApp.toJSON()
+    
+    return ctx.body = dealBody({
+      data: jsonApp,
+      message: '修改成功'
     })
   }
 }

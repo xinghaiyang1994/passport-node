@@ -16,5 +16,17 @@ module.exports = {
   // 新增单个
   insertApp({ name }) {
     return App.forge({ name }).save()
+  },
+  // 新增单个
+  findAppDetailById(id) {
+    return App.forge({ id }).fetch()
+  },
+  // 新增单个
+  deleteAppById(id) {
+    return App.forge({ id }).destroy({ require: false })
+  },
+  // 新增单个
+  updateApp({ id, name, gmtModified }) {
+    return App.forge().where({ id }).save({ name, gmtModified }, { method: 'update' })
   }
 }
