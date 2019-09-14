@@ -4,7 +4,7 @@ const { dealBody, tranTime } = require('../utils/tools')
 const {
   findAppListByName,
   findAppCountByName,
-  findAppByName,
+  findAppByCode,
   insertApp,
   findAppDetailById,
   deleteAppById,
@@ -12,18 +12,18 @@ const {
 } = require('../dao/app')
 
 module.exports = {
-  // 获取用户信息
+  // 列表(翻页)
   async getList(ctx) {
-    let { name = '', page = 1, pageSize = 10 } = ctx.query
+    let { name = '', code = '', page = 1, pageSize = 10 } = ctx.query
 
     // 查询列表及总数
-    const daoList = await findAppListByName({ name, page, pageSize})
+    const daoList = await findAppListByName({ name, code, page, pageSize})
     const jsonList = daoList.toJSON()
     jsonList.forEach(el => {
       el.gmtCreate = tranTime(el.gmtCreate)
       el.gmtModified = tranTime(el.gmtModified)
     })
-    const count = await findAppCountByName(name)
+    const count = await findAppCountByName(name, code)
 
     return ctx.body = dealBody({
       data: {
@@ -34,18 +34,19 @@ module.exports = {
   },
   // 新增
   async postAdd(ctx) {
-    let { name } = ctx.request.body
+    let { name, code } = ctx.request.body
     name = name.trim()
+    code = code.trim()
 
     // 校验
-    validate({ name }, app)
-    let daoApp = await findAppByName(name) 
+    validate({ name, code }, app)
+    let daoApp = await findAppByCode(code) 
     if (daoApp) {
-      throw new Error('用户名已存在！')
+      throw new Error('唯一标识已存在！')
     }
 
     // 新增单个
-    let daoNewApp = await insertApp({ name })
+    let daoNewApp = await insertApp({ name, code })
     let jsonNewApp = daoNewApp.toJSON()
     
     return ctx.body = dealBody({
@@ -83,25 +84,31 @@ module.exports = {
   },
   // 修改
   async postModify(ctx) {
-    let { id, name } = ctx.request.body
+    let { id, name, code } = ctx.request.body
     name = name.trim()
+    code = code.trim()
 
     // 校验
-    validate({ name }, app)
+    validate({ name, code }, app)
     if (typeof id === 'undefined') {
       throw new Error('id 不能为空！')
     }
+    let daoApp = await findAppByCode(code) 
+    if (daoApp) {
+      throw new Error('唯一标识已存在！')
+    }
     
     // 更新
-    let daoApp = await updateApp({ 
+    let daoUpdateApp = await updateApp({ 
       id, 
       name, 
+      code,
       gmtModified: tranTime(new Date(), 'timestamp-mysql') 
     }) 
-    let jsonApp = daoApp.toJSON()
+    let jsonUpdateApp = daoUpdateApp.toJSON()
     
     return ctx.body = dealBody({
-      data: jsonApp,
+      data: jsonUpdateApp,
       message: '修改成功'
     })
   }

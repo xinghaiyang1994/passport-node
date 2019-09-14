@@ -17,6 +17,7 @@ module.exports = {
   },
   // app
   app: {
-    name: Joi.string().max(20).required()
+    name: Joi.string().max(20).required(),
+    code: Joi.string().max(20).required()
   },
 }
