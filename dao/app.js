@@ -27,11 +27,11 @@ module.exports = {
   findAppDetailById(id) {
     return App.forge({ id }).fetch()
   },
-  // 新增单个
+  // 删除单个
   deleteAppById(id) {
     return App.forge({ id }).destroy({ require: false })
   },
-  // 新增单个
+  // 更新单个
   updateApp({ id, name, code, gmtModified }) {
     return App.forge().where({ id }).save({ name, code, gmtModified }, { method: 'update' })
   }
