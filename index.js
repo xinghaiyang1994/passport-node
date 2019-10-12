@@ -1,22 +1,24 @@
 const Koa = require('koa')
-const bodyParser = require('koa-bodyparser')
-const cors = require('koa2-cors')
-const helmet = require('koa-helmet')
-const session = require('koa-session')
-const redisStore = require('koa-redis')
+const koaBody = require('koa-body')
+const koa2Cors = require('koa2-cors')
+const koaHelmet = require('koa-helmet')
+const koaSession = require('koa-session')
+const koaRedis = require('koa-redis')
+const path = require('path')
+const koaStaticCache = require('koa-static-cache')
 
 const routes = require('./routes')
-const { port, redis, redisSession } = require('./config/default')
 const { logError } = require('./middlewares/log')
+const { port, redisSession, redisConfig, sessionKeys } = require('./config/default')
 
 const app = new Koa()
 
 // 提供安全 headers 
-app.use(helmet())
+app.use(koaHelmet())
 
 // 支持跨域
-app.use(cors({
-  'credentials': true
+app.use(koa2Cors({
+  credentials: true
 }))
 
 // 错误处理
@@ -30,26 +32,31 @@ app.use(async (ctx, next) => {
       message: err.message,
       data: ''
     }
+
+    // 写入日志
     let errMsg = `${ctx.url} | ${err.message}`
     console.log(errMsg)
     logError.error(errMsg)
   }
 })
 
+// 静态资源
+app.use(koaStaticCache(path.join(__dirname, './static'), { dynamic: true }))
+
 // session 存入 redis
-let store = redisStore(redis)
-app.keys = redisSession.keys   // 秘钥
+let store = koaRedis(redisConfig)
+app.keys = sessionKeys   // 秘钥
 const sessionConfig = {    
   prefix: redisSession.prefix,        // redis 中 key 的前缀
   key: redisSession.key,    // cookie 的名称。默认为 koa:sess
   domain: redisSession.domain,
   store
 }
-app.use(session(sessionConfig, app))
+app.use(koaSession(sessionConfig, app))
 
 // 解析 post
-app.use(bodyParser({
-  formLimit: '1mb'
+app.use(koaBody({
+  multipart: true   // 开启上传文件
 }))
 
 // 路由

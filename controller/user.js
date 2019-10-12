@@ -1,5 +1,5 @@
 const svgCaptcha = require('svg-captcha')
-const validate = require('../utils/validate')
+const { validateForm } = require('../utils/tools')
 const { register, login } = require('../utils/joiSchema')
 const { dealBody, md5 } = require('../utils/tools')
 const { checkLogin } = require('../middlewares/check')
@@ -33,7 +33,7 @@ module.exports = {
     name = name.trim()
 
     // 校验
-    validate({ name, password, passwordAgain, captcha }, register)
+    validateForm({ name, password, passwordAgain, captcha }, register)
     if (password !== passwordAgain) {
       throw new Error('两次密码不相同！')
     }
@@ -66,7 +66,7 @@ module.exports = {
     name = name.trim()
 
     // 校验
-    validate({ name, password, captcha }, login)
+    validateForm({ name, password, captcha }, login)
     if (captcha !== ctx.session.loginCaptcha) {
       throw new Error('验证码错误！')
     }

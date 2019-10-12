@@ -1,4 +1,6 @@
 const crypto = require('crypto')
+const Joi = require('joi')
+const language = require('../config/joi-lang')
 
 function toD(num) {
   return num < 10 ? '0' + num : '' + num
@@ -31,5 +33,15 @@ module.exports = {
     }
     // 默认返回时间戳
     return date.getTime()
+  },
+  // 格式校验
+  validateForm(value, schema, options = {}) {
+    options.language = language
+    return Joi.validate(value, schema, options, err => {
+      if (err) {
+        console.log('校验格式错误', err.details)
+        throw new Error(err.details[0].message)
+      }
+    })
   }
 }

@@ -17,15 +17,15 @@ module.exports = {
   },
   // 查询单个详情
   findAppByCode(code) {
-    return App.forge().where({ code }).fetch()
+    return App.forge().where({ code }).fetch({ require: false })
   },
   // 新增单个
   insertApp({ name, code }) {
     return App.forge({ name, code }).save()
   },
-  // 新增单个
+  // 查询单个详情
   findAppDetailById(id) {
-    return App.forge({ id }).fetch()
+    return App.forge({ id }).fetch({ require: false })
   },
   // 删除单个
   deleteAppById(id) {

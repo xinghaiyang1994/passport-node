@@ -1,4 +1,4 @@
-const validate = require('../utils/validate')
+const { validateForm } = require('../utils/tools')
 const { app } = require('../utils/joiSchema')
 const { dealBody, tranTime } = require('../utils/tools')
 const {
@@ -39,7 +39,7 @@ module.exports = {
     code = code.trim()
 
     // 校验
-    validate({ name, code }, app)
+    validateForm({ name, code }, app)
     let daoApp = await findAppByCode(code) 
     if (daoApp) {
       throw new Error('唯一标识已存在！')
@@ -89,7 +89,7 @@ module.exports = {
     code = code.trim()
 
     // 校验
-    validate({ name, code }, app)
+    validateForm({ name, code }, app)
     if (typeof id === 'undefined') {
       throw new Error('id 不能为空！')
     }
